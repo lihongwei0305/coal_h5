@@ -231,16 +231,21 @@ watch(() => initValueArr.value, (n, o) => {
 const handleFieldClick = async (item) => {
   if (!isSelect(item.type)) return;
   await createComponent({
-    component: await import('@/components/DictSelect/index.vue'),
+    component: await import('@/components/myPopup/index.vue'),
     params: {
-      visible: true,
-      title: item.label,
-      code: item.code,
-      modelValue: [queryForm.value[item.field]],
-      treeData: item.treeData,
-      onChange: (data) => {
-        queryForm.value[item.field] = data.value;
-        dictSelect[item.field] = data.name;
+      show: true,
+      style: {
+        height: '60%',
+      },
+      component: await import('@/components/tree.vue'),
+      componentBind: {
+        title: item.label,
+        selected: queryForm.value[item.field],
+        code: item.code,
+        onConfirm: (data) => {
+          queryForm.value[item.field] = data.id;
+          dictSelect[item.field] = data.name;
+        }
       }
     }
   })

@@ -40,8 +40,8 @@
             readonly
             required
             is-link
-            @click="handleTest('category')"
             :rules="[{ required: true, message: '请选择分类' }]"
+            @click="handleDictSelectClick('category')"
 
         />
         <van-field
@@ -203,199 +203,21 @@ const title = computed(() => {
 
 const handleDictSelectClick = async (field) => {
   await createComponent({
-    component: await import('@/components/DictSelect/index.vue'),
-    params: {
-      visible: true,
-      title: dictSelect[field].title,
-      code: dictSelect[field].code,
-      modelValue: [state.form[field]],
-      onChange: (data) => {
-        state.form[field] = data.value;
-        dictSelect[field].name = data.name;
-      }
-    }
-  })
-
-}
-const handleTest = async () => {
-  await createComponent({
     component: await import('@/components/myPopup/index.vue'),
     params: {
       show: true,
-      component: await import('@/views/warehouse/warehouseGoods/components/tree.vue'),
+      style: {
+        height: '60%',
+      },
+      component: await import('@/components/tree.vue'),
       componentBind: {
-        data:[
-          {
-            id: '1',
-            label: 'Node 1',
-            children: [
-              {
-                id: '1-1',
-                label: 'Node 1-1',
-                children: [
-                  {
-                    id: '1-1-1',
-                    label: 'Node 1-1-1'
-                  },
-                  {
-                    id: '1-1-2',
-                    label: 'Node 1-1-2'
-                  },
-                  {
-                    id: '1-1-3',
-                    label: 'Node 1-1-3'
-                  },
-                  {
-                    id: '1-1-4',
-                    label: 'Node 1-1-4'
-                  }
-                ]
-              },
-              {
-                id: '1-2',
-                label: 'Node 1-2'
-              }
-            ]
-          },
-          {
-            id: '2',
-            label: 'Node 2',
-            children: [
-              {
-                id: '2-1',
-                label: 'Node 2-1'
-              }
-            ]
-          },
-          {
-            id: '3',
-            label: 'Node 3',
-            children: [
-              {
-                id: '3-1',
-                label: 'Node 3-1',
-                children: [
-                  {
-                    id: '3-1-1',
-                    label: 'Node 3-1-1'
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: '4',
-            label: 'Node 4',
-            children: [
-              {
-                id: '4-1',
-                label: 'Node 4-1',
-                children: [
-                  {
-                    id: '4-1-1',
-                    label: 'Node 4-1-1'
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: '1',
-            label: 'Node 1',
-            children: [
-              {
-                id: '1-1',
-                label: 'Node 1-1',
-                children: [
-                  {
-                    id: '1-1-1',
-                    label: 'Node 1-1-1'
-                  },
-                  {
-                    id: '1-1-2',
-                    label: 'Node 1-1-2'
-                  },
-                  {
-                    id: '1-1-3',
-                    label: 'Node 1-1-3'
-                  },
-                  {
-                    id: '1-1-4',
-                    label: 'Node 1-1-4'
-                  }
-                ]
-              },
-              {
-                id: '1-2',
-                label: 'Node 1-2'
-              }
-            ]
-          },
-          {
-            id: '1',
-            label: 'Node 1',
-            children: [
-              {
-                id: '1-1',
-                label: 'Node 1-1',
-                children: [
-                  {
-                    id: '1-1-1',
-                    label: 'Node 1-1-1'
-                  },
-                  {
-                    id: '1-1-2',
-                    label: 'Node 1-1-2'
-                  },
-                  {
-                    id: '1-1-3',
-                    label: 'Node 1-1-3'
-                  },
-                  {
-                    id: '1-1-4',
-                    label: 'Node 1-1-4'
-                  }
-                ]
-              },
-              {
-                id: '1-2',
-                label: 'Node 1-2'
-              }
-            ]
-          },
-          {
-            id: '1',
-            label: 'Node 1',
-            children: [
-              {
-                id: '1-1',
-                label: 'Node 1-1',
-                children: [
-                  {
-                    id: '1-1-1',
-                    label: 'Node 1-1-1'
-                  },
-                  {
-                    id: '1-1-2',
-                    label: 'Node 1-1-2'
-                  },
-                  {
-                    id: '1-1-3',
-                    label: 'Node 1-1-3'
-                  },
-                  {
-                    id: '1-1-4',
-                    label: 'Node 1-1-4'
-                  }
-                ]
-              },
-              {
-                id: '1-2',
-                label: 'Node 1-2'
-              }
-            ]
-          }
-        ]
+        title: dictSelect[field].title,
+        selected: state.form[field],
+        code: dictSelect[field].code,
+        onConfirm: (data) => {
+          state.form[field] = data.id;
+          dictSelect[field].name = data.name;
+        }
       }
     }
   })

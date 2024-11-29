@@ -18,7 +18,11 @@
             item.coalInfo?.name || ''
           }}({{ item.coalInfo?.coalTypeName || '' }})
         </div>
-        <div class="oval_box" :style="orderStatusStyle(item)">{{ item.orderStatusName }}</div>
+<!--        <div class="oval_box" :style="orderStatusStyle(item)">{{ item.orderStatusName }}</div>-->
+      </div>
+      <div class="row">
+        <div class="title">订单状态：</div>
+        <div class="font-semibold" :style="orderStatusStyle(item)">{{ item.orderStatusName }}</div>
       </div>
       <div class="row" style="justify-content: space-between">
         <div class="" style="width: 25%">
@@ -70,6 +74,7 @@
           </div>
         </template>
       </div>
+
       <div class="row">
         <div class="title">采购时间：</div>
         <div>{{ item.startTime }}</div>
@@ -300,24 +305,24 @@ const buttons = ref([
 ])
 
 const orderStatusStyle = (row) => {
-  let backgroundColor;
+  let color;
   switch (row.orderStatus) {
     case '0':
-      backgroundColor = 'blue';
+      color = 'blue';
       break;
     case '1':
-      backgroundColor = '#e6a23c';
+      color = '#e6a23c';
       break;
     case '2':
-      backgroundColor = 'green';
+      color = 'green';
       break;
     case '3':
-      backgroundColor = 'red';
+      color = 'red';
       break;
   }
 
   return {
-    backgroundColor,
+    color,
   }
 
 }
