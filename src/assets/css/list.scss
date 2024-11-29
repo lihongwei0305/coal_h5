@@ -1,0 +1,119 @@
+.container {
+  box-sizing: border-box;
+  background-color: #f3f1f1;
+}
+
+.list_wrapper {
+
+  &_item {
+    margin: 10px 10px 20px 10px;
+
+    //background-color: #74EBD5;
+    //background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
+    background-color: #FFF;
+    //background-image: linear-gradient(90deg, #b7ede2 0%, #c5c5ed 100%);
+    border-radius: 8px;
+    position: relative;
+
+    &_header {
+      padding: 5px 10px;
+
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+
+      .left {
+        display: flex;
+
+        .title {
+          margin-right: 5px;
+        }
+
+        .tag {
+          border: 1px solid #1eccda;
+          color: #1eccda;
+          border-radius: 4px;
+          font-size: 12px;
+          padding: 2px;
+        }
+      }
+
+    }
+
+    &_content {
+      padding: 5px 10px;
+
+      .row {
+        padding: 3px 0;
+        display: flex;
+        align-items: end;
+
+        .title {
+          font-weight: bold;
+        }
+      }
+    }
+
+    &_footer {
+      padding: 5px 10px 5px;
+      border-top: 1px solid #c8c6c6;
+
+      .van-checkbox {
+        .van-badge__wrapper {
+          border: 2px solid #0b78ea;
+        }
+      }
+    }
+
+    .click_checkbox_area {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100%;
+    }
+  }
+}
+
+
+
+.no_data {
+  height: 95vh;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.archive_img {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  right: 10px;
+  bottom: 55px;
+}
+
+.oval_box {
+  text-align: center;
+  font-size: 14px;
+  width: 70px;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+.archiveStatus {
+  position: absolute;
+  top: 0;
+  right: 0;
+  //background-color: #7fdd02;
+  //background-color: #fa1e1e;
+  color: white;
+  padding: 5px 8px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  font-size: 10px;
+}
