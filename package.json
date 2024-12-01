@@ -22,6 +22,7 @@
     "vant": "^4.9.6",
     "vue": "^3.4.21",
     "vue-router": "^4.3.2"
+
   },
   "devDependencies": {
     "@nutui/auto-import-resolver": "^1.0.0",
