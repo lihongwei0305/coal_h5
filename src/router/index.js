@@ -2,6 +2,32 @@ import {createRouter, createWebHashHistory} from 'vue-router';
 import {useUserStore} from "@/store/user.js";
 import {useKeepAlive} from "@/store/keepAlive.js";
 import {useTabbar} from '@/store/useTabbar.js'
+import {defineAsyncComponent} from "vue";
+import LoadingComponent from "@/components/LoadingComponent.vue";
+
+
+
+function createAsyncComp(ins) {
+    return Promise.resolve(defineAsyncComponent({
+        loader: () => ins,
+        loadingComponent: LoadingComponent,
+        delay: 2000,
+    }));
+}
+function addKey(routes) {
+    routes.forEach(route => {
+        if (route.children?.length) {
+            addKey(route.children);
+        }
+        if ('meta' in route) {
+            route.meta.key = route.path + new Date().getTime();
+        } else {
+            route.meta = {
+                key: route.path + new Date().getTime(),
+            }
+        }
+    })
+}
 
 let routes = [
     {
@@ -14,7 +40,7 @@ let routes = [
     //工作台
     {
         path: '/workbench',
-        component: () => import('@/views/workbench/index.vue'),
+        component: () => createAsyncComp(import('../views/workbench/index.vue')),
         meta: {
             tabbar: true,
 
@@ -24,40 +50,42 @@ let routes = [
     {
         path: '/device',
         name: 'device',
-        component: () => import('@/views/device/index.vue'),
+        component: () => createAsyncComp(import('../views/device/index.vue')),
         meta: {
-            keepAlive: true
+            keepAlive: true,
+            dynamicKeepAlve: true,
+
         },
     },
     {
         path: '/device/operate',
-        component: () => import('@/views/device/operate.vue')
+        component: () => createAsyncComp(import('../views/device/operate.vue')),
     },
     {
         path: '/workOrder',
-        component: () => import('@/views/workOrder/index.vue')
+        component: () => createAsyncComp(import('../views/workOrder/index.vue')),
     },
     {
         path: '/workOrder/operate',
-        component: () => import('@/views/workOrder/operate.vue')
+        component: () => createAsyncComp(import('../views/workOrder/operate.vue')),
     },
     {
         path: '/coalanalysis',
-        component: () => import('@/views/coalanalysis/index.vue')
+        component: () => createAsyncComp(import('../views/coalanalysis/index.vue')),
     },
     {
         path: '/coalanalysis/operate',
-        component: () => import('@/views/coalanalysis/operate.vue')
+        component: () => createAsyncComp(import('../views/coalanalysis/operate.vue')),
     },
     {
         path: '/pdc/realTimeData',
-        component: () => import('@/views/pdc/realTimeData.vue')
+        component: () => createAsyncComp(import('../views/pdc/realTimeData.vue'))
     },
     //生产
     {
         path: '/prod/coalWashingDailyAnalysis',
         name: 'coalWashingDailyAnalysis',
-        component: () => import('@/views/prod/coalWashingDailyAnalysis/index.vue'),
+        component: () => createAsyncComp(import('../views/prod/coalWashingDailyAnalysis/index.vue')),
         meta: {
             keepAlive: true,
         }
@@ -67,7 +95,7 @@ let routes = [
     {
         path: '/weight/data',
         name: 'weightData',
-        component: () => import('@/views/weight/data/index.vue'),
+        component: () => createAsyncComp(import('../views/weight/data/index.vue')),
         meta: {
             keepAlive: true,
         }
@@ -76,7 +104,7 @@ let routes = [
     {
         path: '/order/purchaseOrder',
         name: 'purchaseOrder',
-        component: () => import('@/views/order/purchaseOrder/index.vue'),
+        component: () => createAsyncComp(import('../views/order/purchaseOrder/index.vue')),
         meta: {
             keepAlive: true,
         }
@@ -84,7 +112,7 @@ let routes = [
     {
         path: '/order/saleOrder',
         name: 'saleOrder',
-        component: () => import('@/views/order/saleOrder/index.vue'),
+        component: () => createAsyncComp(import('../views/order/saleOrder/index.vue')),
         meta: {
             keepAlive: true,
         }
@@ -93,49 +121,77 @@ let routes = [
     // 门禁
     {
         path: '/accessgate/data',
-        component: () => import('@/views/accessgate/data/index.vue')
+        component: () => createAsyncComp(import('../views/accessgate/data/index.vue'))
     },
 
 
     {
         path: '/accessgate/appointment',
         name: 'accessgateAppointment',
-        component: () => import('@/views/accessgate/appointment/index.vue'),
+        component: () => createAsyncComp(import('../views/accessgate/appointment/index.vue')),
+        meta: {
+            keepAlive: true,
+            dynamicKeepAlve: true,
+        }
+    },
+    {
+        path: '/accessgate/appointment/operate',
+        component: () => createAsyncComp(import('../views/accessgate/appointment/operate.vue'))
+    },
+    //水电表
+    {
+        path: '/meter/meterLog',
+        component: () => createAsyncComp(import('../views/meter/meterLog/index.vue'))
+    },
+    //库房
+    {
+        path: '/warehouse/warehouseGoodsSummary',
+        name: 'warehouseGoodsSummary',
+        component: () => createAsyncComp(import('../views/warehouse/warehouseGoodsSummary/index.vue')),
         meta: {
             keepAlive: true
         }
     },
     {
-        path: '/accessgate/appointment/operate',
-        component: () => import('@/views/accessgate/appointment/operate.vue')
-    },
-    //水电表
-    {
-        path: '/meter/meterLog',
-        component: () => import('@/views/meter/meterLog/index.vue')
-    },
-    //库房
-    {
-        path: '/warehouse/warehouseGoodsSummary',
-        component: () => import('@/views/warehouse/warehouseGoodsSummary/index.vue')
-    },
-    {
         path: '/warehouse/warehouseGoods',
-        component: () => import('@/views/warehouse/warehouseGoods/index.vue')
+        component: () => createAsyncComp(import('../views/warehouse/warehouseGoods/index.vue'))
     },
     {
         path: '/warehouse/warehouseGoods/operate',
-        component: () => import('@/views/warehouse/warehouseGoods/operate.vue')
+        component: () => createAsyncComp(import('../views/warehouse/warehouseGoods/operate.vue'))
     },
     {
         path: '/warehouse/warehouseReceipt',
-        component: () => import('@/views/warehouse/warehouseReceipt/index.vue')
+        name: 'warehouseReceipt',
+        component: () => createAsyncComp(import('../views/warehouse/warehouseReceipt/index.vue')),
+        meta: {
+            keepAlive: true
+        }
+    },
+    {
+        path: '/warehouse/warehouseReceiptEnter',
+        name: 'warehouseReceiptEnter',
+        component: () => createAsyncComp(import('../views/warehouse/warehouseReceiptEnter/index.vue')),
+        meta: {
+            // keepAlive: true
+            title: 'test',
+
+        }
+    },
+    {
+        path: '/warehouse/receiptHistory/:goods/:warehouse',
+        name: 'receiptHistory',
+        component: () => createAsyncComp(import('../views/warehouse/receiptHistory/index.vue')),
+        props: true,
+        meta: {
+            keepAlive: true,
+        }
     },
 
     //我的
     {
         path: '/my',
-        component: () => import('@/views/my/my.vue'),
+        component: () => createAsyncComp(import('../views/my/my.vue')),
         meta: {
             tabbar: true,
         }
@@ -143,9 +199,18 @@ let routes = [
     //登录
     {
         path: '/login',
-        component: () => import('@/views/login/index.vue')
+        component: () => createAsyncComp(import('../views/login/index.vue'))
+    },
+    {
+        path: '/qrcode',
+        component: () => createAsyncComp(import('../views/qrcode/index.vue')),
+        meta: {
+            tabbar: false,
+        }
     }
-]
+];
+
+addKey(routes)
 
 const router = createRouter({
         routes,
@@ -175,14 +240,13 @@ router.beforeEach((to, from, next) => {
         // ElMessage.warning("请先登录")
         return next('/login')
     }
-
-
-    if (from.meta?.keepAlive) {
-        if (['/device/operate', '/accessgate/appointment/operate'].includes(to.path)) {
-            keepAliveStore.setIncludes('add', from.name);
-        } else {
-            keepAliveStore.setIncludes('remove', from.name);
-        }
+    // if (to.meta?.keepAlive) {
+    //     keepAliveStore.setIncludes('add', to.name);
+    // }
+    if (from.meta?.keepAlive || to.meta?.keepAlive) {
+        keepAliveStore.setIncludes('add', from.name);
+    }else {
+        keepAliveStore.setIncludes('remove', from.name);
     }
     next();
 });

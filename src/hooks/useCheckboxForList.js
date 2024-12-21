@@ -1,6 +1,6 @@
 import {ref} from "vue";
 
-export function useCheckboxForList(list,isOperate) {
+export function useCheckboxForList(list, isOperate, isCheckBox) {
 
     const checkMap = new Map();
 
@@ -8,7 +8,15 @@ export function useCheckboxForList(list,isOperate) {
     const indeterminate = ref(false)
 
     const changeCheckbox = (item) => {
-        if(!isOperate) return;
+        if (!isOperate) return;
+        if(item.disabled) return;
+        if (!isCheckBox.value) {
+
+            list.value.forEach(item => {
+                item.checked = false
+            })
+        }
+
         item.checked = !item.checked
     }
     const handleCheckAllChange = (val) => {

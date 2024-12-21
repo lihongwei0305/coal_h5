@@ -35,6 +35,10 @@ const getClass = computed(() => {
       return 'danger';
     case 'success':
       return 'success';
+    case 'archive':
+      return 'archive';
+    case 'unarchive':
+      return 'unarchive';
   }
 })
 
@@ -61,8 +65,8 @@ const handleClick = () => {
 }
 
 .warring {
-  border: 1px solid #ff976a;
-  color: #ff976a;
+  border: 1px solid #e6a23c;
+  color: #e6a23c;
 }
 
 .danger {
@@ -73,5 +77,13 @@ const handleClick = () => {
 .success {
   border: 1px solid #07c160;
   color: #07c160;
+}
+.archive {
+  border: 1px solid #3a23d7;
+  color: #3a23d7;
+}
+.unarchive {
+  border: 1px solid #cc5805;
+  color: #cc5805;
 }
 </style>

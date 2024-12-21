@@ -2,7 +2,7 @@
   <CommonPage
       ref="commonPageRef"
       title="商品管理"
-      :Api="Api"
+
       :buttons="buttons"
       :popover-actions="popoverActions"
       v-model:is-operate="isOperate"
@@ -13,28 +13,38 @@
       v-bind="$attrs"
   >
     <template #content="{item}">
-      <div class="row">
+      <div class="row justify-between">
         <div class="font-semibold">{{ item.name || '' }}</div>
+        <div class="fs-14">{{ item.code || '' }}</div>
+      </div>
+      <div class="row" v-if="item.spec">
+        <span fs-14 class="spec">{{ item.spec }}</span>
+      </div>
+      <div class="row" v-if="item.model">
+        <span fs-14 class="model">{{ item.model }}</span>
       </div>
       <div class="row">
-        <div>{{ item.code }}</div>
+        <span v-if="item.category?.name" fs-14>{{ item.category?.name }}</span>
+        <span v-else class="fs-14 color-[#fff]" style="color: #d6d6d6">分类</span>
       </div>
-      <div class="row">
-        <div>{{ item.category?.name || '' }}</div>
+      <div class="row fs-14">
+        <div class="">当前库存：</div>
+        <div :style="{color: item.stock == 0? 'red' : ''}">{{ item.stock }}</div>
       </div>
-      <div class="row">
-        <div class="title">进货价：</div>
+
+      <div class="row fs-14">
+        <div class="">进货价：</div>
         <div>{{ item.price1 }}</div>
       </div>
-      <div class="row">
-        <div class="title">市场价：</div>
+      <div class="row fs-14">
+        <div class="">市场价：</div>
         <div>{{ item.price2 }}</div>
       </div>
 
     </template>
   </CommonPage>
 
-    <van-floating-bubble icon="plus" @click="$router.push('/warehouse/warehouseGoods/operate')"/>
+  <van-floating-bubble v-if="!isOperate" icon="plus" @click="$router.push('/warehouse/warehouseGoods/operate')"/>
 
 </template>
 <script setup>
@@ -50,6 +60,7 @@ defineOptions({
 })
 
 import * as Api from '@/api/warehouseGoods.js'
+import * as warehouseReceiptApi from '@/api/warehouseReceipt.js'
 import {computed, nextTick, onActivated, onMounted, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import CommonPage from '@/components/CommonPage';
@@ -57,6 +68,12 @@ import CommonPage from '@/components/CommonPage';
 
 import {confirmDialog} from "@/hooks/useOperateDialog.js";
 
+const props = defineProps({
+  getListBefore: Function,
+  isGetStock: Boolean,
+  getStockBefore: Function,
+  isDisabled: Boolean,
+})
 
 const router = useRouter();
 const commonPageRef = ref(null);
@@ -64,14 +81,29 @@ const commonPageRef = ref(null);
 const isOperate = ref(false);
 const showQueryPopup = ref(false);
 const getListAttrs = ref({
+  api: Api.list,
   params: {
     orders: [
-      // {
-      //   direction: 'DESC',
-      //   property: 'passTime',
-      // }
+      {
+        "direction": "DESC",
+        "property": "createTime"
+      }
     ]
+  },
+
+  getListBefore: props?.getListBefore,
+  getListAfter:async (data) => {
+    if (props.isGetStock) {
+      if (data.length) {
+        await getStock(data.map(item => item.id), data);
+      }
+    }
+
+
   }
+
+
+
 });
 
 const handleDetail = async (row) => {
@@ -87,7 +119,28 @@ const handleDetail = async (row) => {
   })
 
 };
-
+const getStock = async (goodsIds,data) => {
+  let params = {
+    goodsIds,
+    "excludeEmpty": true,
+    "shelveSummary": false,
+  }
+  let other = props.getStockBefore?.(params) || {};
+  let {data:res} = await warehouseReceiptApi.report({
+    ...params,
+    ...other,
+  });
+  data.forEach(v => {
+    res.forEach(item => {
+      if (v.id === item.id) {
+        v.stock = item.currNumber;
+        if (props.isDisabled) {
+          v.disabled = item.currNumber == 0;
+        }
+      }
+    });
+  });
+};
 const remove = (item) => {
   confirmDialog('删除', {
     getList: commonPageRef.value.refreshList,
@@ -106,8 +159,8 @@ const popoverActions = ref([
 ]);
 
 const buttons = ref([
-  {label: '详情', type: 'primary',  onClick: handleDetail},
-  {label: '删除', type:'danger', onClick: remove},
+  {label: '详情', type: 'primary', operate: true, onClick: handleDetail},
+  {label: '删除', type: 'danger', onClick: remove},
 
 ])
 
@@ -123,6 +176,37 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.spec {
+  &::after {
+    position: relative;
+    top: -4px;
+    left: 5px;
+    content: '规格';
+    font-size: 8px;
+    text-align: start;
+    border: 1px solid #10cd86;
+    color: #10cd86;
+    padding: 1px;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+}
+
+.model {
+  &::after {
+    position: relative;
+    top: -4px;
+    left: 5px;
+    content: '型号';
+    font-size: 8px;
+    text-align: start;
+    border: 1px solid #0de0e4;
+    color: #0de0e4;
+    padding: 1px;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+}
 
 
 </style>

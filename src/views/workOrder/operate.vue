@@ -125,13 +125,11 @@
               title="选择工单类型"
   ></DictSelect>
 
-  <TimePopup v-model:show="state.timePopupShow" v-model:time="state.form.time"></TimePopup>
 </template>
 
 <script setup>
 import * as Api from '@/api/deviceWorkOrder.js'
 import DictSelect from '@/components/DictSelect/index.vue'
-import TimePopup from '@/components/TimePopup/index.vue'
 import {useDictSelect} from '@/components/DictSelect/useDictSelect.js'
 import {computed, onMounted, reactive, ref} from "vue";
 import {showConfirmDialog, showToast} from "vant";

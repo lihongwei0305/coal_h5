@@ -2,7 +2,6 @@
   <CommonPage
       ref="commonPageRef"
       title="生产报表"
-      :Api="Api"
       :buttons="buttons"
       :popover-actions="popoverActions"
       v-model:is-operate="isOperate"
@@ -107,6 +106,7 @@ const isOperate = ref(false);
 const showQueryPopup = ref(false)
 
 const getListAttrs = ref({
+  api: Api.list,
   params: {
     orders: [
       {

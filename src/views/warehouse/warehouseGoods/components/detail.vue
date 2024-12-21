@@ -168,11 +168,11 @@ onUnmounted(() => {
 .row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-top: 6px;
   font-size: 14px;
-
+  border-bottom: 1px solid #f6f3f3;
   .title {
+    width: 60%;
     color: #2c2f3b;
   }
 

@@ -115,6 +115,12 @@ const rightList = ref([
         icon: shallowRef(PdcSssj)
       },
       {
+        title: '单据录入',
+        permission: '/pdc/realTimeData',
+        url: '/warehouse/warehouseReceiptEnter',
+        icon: shallowRef(PdcSssj)
+      },
+      {
         title: '单据查询',
         permission: '/pdc/realTimeData',
         url: '/warehouse/warehouseReceipt',
@@ -290,7 +296,7 @@ onMounted(() => {
 }
 
 #right {
-  height: 200vh;
+  height: 224vh;
 }
 
 .van-sidebar {

@@ -8,7 +8,7 @@
       v-bind="$attrs"
   >
     <div class="wrapper">
-      <div class="btns">
+      <div class="btns" v-if="showHeaderButtons">
         <div class="button" @click=cancel>取消</div>
         <div class="button" @click="confirm">确认</div>
       </div>
@@ -24,7 +24,13 @@
 
 import useUnmount from "@/hooks/useUnmount.js";
 
-const props = defineProps({});
+const props = defineProps({
+  showHeaderButtons: {
+    type: Boolean,
+    default: true
+  },
+
+});
 
 
 const emits = defineEmits(['update:show', 'cancel', 'confirm', 'close'])
@@ -41,6 +47,13 @@ const confirm = () => {
   close();
 }
 useUnmount(close);
+
+
+defineExpose({
+  cancel,
+  confirm,
+})
+
 </script>
 
 <style lang="scss" scoped>

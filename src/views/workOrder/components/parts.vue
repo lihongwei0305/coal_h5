@@ -44,15 +44,12 @@
     </Popup>
 
 
-    <TimePopup v-model:show="startTimePopupShow" v-model:time="form.startTime"></TimePopup>
-    <TimePopup v-model:show="endTimePopupShow" v-model:time="form.endTime"></TimePopup>
   </div>
 </template>
 
 <script setup>
 import Popup from "@/components/Popup/index.vue";
 import {nextTick, onMounted, ref, unref, watch} from "vue";
-import TimePopup from "@/components/TimePopup/index.vue";
 import * as fileApi from "@/api/file.js";
 import { useCommonRequest } from '@/hooks/useCommomRequest.js'
 

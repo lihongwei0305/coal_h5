@@ -2,7 +2,7 @@ import request from "@/request";
 
 export function create(data) {
     return request({
-        url: "/warehouseReceipt/create",
+        url: "/orderNoRule/create",
         method: "POST",
         data
     })
@@ -10,7 +10,7 @@ export function create(data) {
 
 export function update(data) {
     return request({
-        url: "/warehouseReceipt/update",
+        url: "/orderNoRule/update",
         method: "POST",
         data
     })
@@ -18,7 +18,7 @@ export function update(data) {
 
 export function remove(data) {
     return request({
-        url: "/warehouseReceipt/delete",
+        url: "/orderNoRule/delete",
         method: "POST",
         data
     })
@@ -27,7 +27,7 @@ export function remove(data) {
 
 export function list(data) {
     return request({
-        url: "/warehouseReceipt/list",
+        url: "/orderNoRule/list",
         method: "POST",
         data
     })
@@ -35,38 +35,38 @@ export function list(data) {
 
 export function getById(data) {
     return request({
-        url: "/warehouseReceipt/getById",
+        url: "/orderNoRule/getById",
         method: "POST",
         data
     })
 }
 
-export function roots(data) {
+
+export function initDefault(data) {
     return request({
-        url: "/warehouseReceipt/roots",
+        url: "/orderNoRule/initDefault",
         method: "POST",
         data
     })
 }
-export function archive(data){
+export function previewOrderNo(data) {
     return request({
-        url: "/warehouseReceipt/archive",
-        method:"POST",
+        url: "/orderNoRule/previewOrderNo",
+        method: "POST",
         data
     })
 }
-
-export function unarchive(data){
+export function genOrderNo(data) {
     return request({
-        url: "/warehouseReceipt/unarchive",
-        method:"POST",
+        url: "/orderNoRule/genOrderNo",
+        method: "POST",
         data
     })
 }
-export function report(data){
+export function updateOrderSeq(data) {
     return request({
-        url: "/warehouseReceipt/report",
-        method:"POST",
+        url: "/orderNoRule/updateOrderSeq",
+        method: "POST",
         data
     })
 }

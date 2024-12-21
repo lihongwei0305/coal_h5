@@ -2,7 +2,6 @@
   <CommonPage
       ref="commonPageRef"
       title="采购订单"
-      :Api="Api"
       :buttons="buttons"
       :popover-actions="popoverActions"
       v-model:is-operate="isOperate"
@@ -129,6 +128,7 @@ const state = reactive({
 })
 
 const getListAttrs = ref({
+  api: Api.list,
   params: {
     orders: [
       {

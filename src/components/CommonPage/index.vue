@@ -13,7 +13,7 @@
           <div class="font-14">当前操作：<i class="color-#0b78ea" style="font-style: inherit">{{
               currentOperate || currentSelect.text
             }}</i></div>
-          <van-checkbox shape="shape" v-model="isCheckAll" :indeterminate="indeterminate"
+          <van-checkbox v-if="isCheckBox" shape="shape" v-model="isCheckAll" :indeterminate="indeterminate"
                         @change="handleCheckAllChange">
             全选
           </van-checkbox>
@@ -33,22 +33,40 @@
           >
             <template v-for="item in list" :key="item.id">
               <div class="list_wrapper_item" style="position: relative">
-                <div v-if="showArchive" class="archiveStatus" :style="{backgroundColor:item.archiveStatus == 0? '#fa1e1e' : '#7fdd02'}">
+                <div v-if="showArchive" class="archiveStatus"
+                     :style="{backgroundColor:item.archiveStatus == 0? '#fa1e1e' : '#7fdd02'}">
                   {{ item.archiveStatusName }}
                 </div>
-                <div class="list_wrapper_item_content" @click="changeCheckbox(item)">
+                <div class="list_wrapper_item_content"
+                     :style="{backgroundColor: item.disabled ? 'rgba(108,107,107,0.3)' : ''}"
+                     @click="changeCheckbox(item)">
                   <slot name="content" v-bind="{item}"></slot>
                 </div>
-                <div class="list_wrapper_item_footer" style="display: flex; justify-content: flex-end">
-                  <van-checkbox v-if="_isOperate" v-model="item.checked" checked-color="#0b78ea"
-                                shape="square" @change="handleCheckItemChange($event,item)"></van-checkbox>
-                  <div v-else class="buttons">
+                <div class="list_wrapper_item_footer"
+                     :style="{display:'flex',justifyContent: _isOperate ? 'space-between' : 'flex-end'}">
+                  <div v-if="_isOperate">
                     <van-space>
                       <template v-for="btn in buttons">
-                        <Button :label="item.label" :item="item" v-bind="btn"></Button>
+                        <Button v-if="btn.operate" :label="item.label" :item="item" v-bind="btn"></Button>
                       </template>
                     </van-space>
                   </div>
+                  <template v-if="_isOperate">
+                    <van-checkbox v-if="!item.disabled" v-model="item.checked" checked-color="#0b78ea"
+                                  shape="square" @change="handleCheckItemChange($event,item)">
+
+                    </van-checkbox>
+                  </template>
+
+                  <template v-else>
+                    <div class="buttons">
+                      <van-space>
+                        <template v-for="btn in buttons">
+                          <Button :label="item.label" :item="item" v-bind="btn"></Button>
+                        </template>
+                      </van-space>
+                    </div>
+                  </template>
                 </div>
               </div>
             </template>
@@ -67,7 +85,13 @@
   <OperateBtn v-if="_isOperate" @cancel="operateCancel" @confirm="operateConfirm"></OperateBtn>
   <Query ref="queryFormRef" :show="showQueryPopup" :items="queryItems"
          @click-overlay="$emit('update:showQueryPopup',false)"
-         @query-confirm="handleQueryConfirm"></Query>
+         @query-confirm="handleQueryConfirm">
+    <template v-for="itemSlot  in  Object.keys($slots)" :key="itemSlot" #[itemSlot]="scope">
+      <template v-if="itemSlot.startsWith('query_')">
+        <slot :name="itemSlot" v-bind="scope"></slot>
+      </template>
+    </template>
+  </Query>
 </template>
 <script setup>
 
@@ -82,7 +106,6 @@ import {useCheckboxForList} from "@/hooks/useCheckboxForList.js";
 import {confirmDialog} from '@/hooks/useOperateDialog.js'
 import OperateBtn from "@/components/CommonPage/components/operateBtn.vue";
 import Button from '@/components/Button.vue'
-import ArchiveImg from "@/components/archiveImg.vue";
 import Query from "@/components/QueryForm/query.vue";
 
 const $slots = useSlots();
@@ -108,11 +131,18 @@ const props = defineProps({
   queryItems: Array,
   navbarBind: Object,
   popupClose: Function,
-  showQueryPopup: Boolean
+  showQueryPopup: Boolean,
+  showAllCheckbox: {
+    type: Boolean,
+    default: true,
+  },
+  selectMode: {
+    type: String,
+    default: 'checkbox',
+  }
 })
 
 const router = useRouter();
-
 
 const pageAttrs = reactive({
   pageSize: 20,
@@ -133,6 +163,10 @@ const popoverSelect = (action) => {
   action.click();
 }
 
+const isCheckBox = computed(() => {
+  return props.selectMode === 'checkbox';
+
+})
 
 const _isOperate = computed(() => {
   return props.isOperate;
@@ -147,7 +181,7 @@ const {
   changeCheckbox,
   handleCheckItemChange,
   handleCheckAllChange
-} = useCheckboxForList(list, _isOperate);
+} = useCheckboxForList(list, _isOperate, isCheckBox);
 
 async function getList() {
   let params = {
@@ -156,9 +190,9 @@ async function getList() {
     items: queryFormRef.value?.queryItems || [],
     ...props.getListAttrs?.params || {}
   }
-  props.getListAttrs?.getListBefore?.(params);
-  let res = await props.Api.list(params);
-  props.getListAttrs?.getListAfter?.(res);
+  await props.getListAttrs?.getListBefore?.(params);
+  let res = await props.getListAttrs.api(params);
+  await props.getListAttrs?.getListAfter?.(res.data);
   if (refreshing.value) {
     list.value = [...res.data];
     refreshing.value = false;
@@ -171,15 +205,14 @@ async function getList() {
     indeterminate.value = checkMap.size > 0 && checkMap.size < list.value.length;
   }
 
-  nextTick(() => {
+  await nextTick(() => {
     let containerEl = document.documentElement.clientHeight;
     let header = document.querySelector('.navbar').getBoundingClientRect().height;
     let list_wrapper_itemEl = document.querySelector('.list_wrapper_item')?.getBoundingClientRect().height;
-    let van_pull_refreshEl = document.querySelector('.van-pull-refresh');
+    let van_pull_refreshEl = document.querySelector('.van-pull-refresh').querySelector('.van-pull-refresh__track');
     let t = parseInt((containerEl - header) / list_wrapper_itemEl);
     if (!res.data.length || res.data.length <= t) {
-      // van_pull_refreshEl.style.height = (list_wrapper_itemEl * (t + 1)) + 'px';
-      van_pull_refreshEl.style.height = (containerEl - header) + 'px';
+      van_pull_refreshEl.style.height = (containerEl - header - 10) + 'px';
     } else {
       van_pull_refreshEl.style.height = '';
     }
@@ -243,8 +276,8 @@ const operateConfirm = () => {
   }
   if (props.customConfirm) {
     props.customConfirm({
-      records: checkMap,
-
+      records: [...checkMap.keys()],
+      close: props.popupClose,
     });
     return;
   }

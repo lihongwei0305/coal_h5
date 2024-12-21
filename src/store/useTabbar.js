@@ -15,11 +15,9 @@ export const useTabbar = defineStore('tabbar', {
     },
     actions: {
         changeShow(payload) {
-            console.log(payload)
             this.show = !!payload;
             this.tabbarKey = Date.now();
 
-            console.log(this.show)
         },
     },
 

@@ -2,7 +2,7 @@
   <CommonPage
       ref="commonPageRef"
       title="磅房数据"
-      :Api="Api"
+
       :buttons="buttons"
       :popover-actions="popoverActions"
       :getListAttrs="getListAttrs"
@@ -39,7 +39,7 @@
     </template>
 
   </CommonPage>
-<!--  <Query ref="queryFormRef" v-model:show="showTop" :items="queryItems" @queryConfirm="queryConfirm"></Query>-->
+  <!--  <Query ref="queryFormRef" v-model:show="showTop" :items="queryItems" @queryConfirm="queryConfirm"></Query>-->
   <template v-if="_showFilterFloat">
     <van-floating-bubble icon="filter-o" @click="showTop = true" :teleport="popupClass"/>
   </template>
@@ -104,6 +104,7 @@ const current = ref({});
 const _showFilterFloat = ref(false);
 const showQueryPopup = ref(false);
 const getListAttrs = ref({
+  api: Api.list,
   params: {
     orders: [
       {
@@ -250,8 +251,8 @@ onMounted(() => {
       }
       if (v.field === 'ycgbTIme') {
         v.initValue = [
-          formatDate(dayjs(), 'YYYY-MM-DD 00:00:00'),
-          formatDate(dayjs(), `YYYY-MM-${dayjs(formatDate(dayjs(), 'YYYY-MM')).daysInMonth()} 23:59:59`)
+          formatDate(dayjs(), 'YYYY-MM-DD'),
+          formatDate(dayjs(), `YYYY-MM-${dayjs(formatDate(dayjs(), 'YYYY-MM')).daysInMonth()}`)
         ];
       }
       if (v.field === 'archiveStatus') {
@@ -265,8 +266,8 @@ onMounted(() => {
   } else {
     let ycgbTIme = queryItems.value.find(v => v.field === 'ycgbTIme');
     ycgbTIme.initValue = [
-      formatDate(dayjs(), 'YYYY-MM-DD 00:00:00'),
-      formatDate(dayjs(), `YYYY-MM-${dayjs(formatDate(dayjs(), 'YYYY-MM')).daysInMonth()} 23:59:59`)
+      formatDate(dayjs(), 'YYYY-MM-DD'),
+      formatDate(dayjs(), `YYYY-MM-${dayjs(formatDate(dayjs(), 'YYYY-MM')).daysInMonth()}`)
     ];
 
   }

@@ -209,7 +209,7 @@ const handleDictSelectClick = async (field) => {
       style: {
         height: '60%',
       },
-      component: await import('@/components/tree.vue'),
+      component: await import('@/components/Tree.vue'),
       componentBind: {
         title: dictSelect[field].title,
         selected: state.form[field],

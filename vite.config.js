@@ -6,6 +6,8 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import NutUIResolver from '@nutui/auto-import-resolver'
 import ElementPlus from 'unplugin-element-plus/vite'
 import UnoCSS from 'unocss/vite'
+
+import basicSsl from '@vitejs/plugin-basic-ssl'
 import path from "path";
 // https://vitejs.dev/config/
 export default (model) => {
@@ -16,6 +18,7 @@ export default (model) => {
                 resolvers: [NutUIResolver()],
             }),ElementPlus()],
         server: {
+            // https:true,
             host: true,
             proxy: {
                 '/api': {

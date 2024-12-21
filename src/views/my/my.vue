@@ -16,7 +16,7 @@
 
     </div>
 
-
+    <button @click="$router.push('/qrcode')">toEr</button>
 
   </div>
 </template>
